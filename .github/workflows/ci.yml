@@ -1,0 +1,28 @@
+name: CI
+
+on: [push] # Trigger the workflow when code is pushed to the repository
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Start JavaScript application
+      run: npm start &
+
+    - name: Wait for application to start
+      run: sleep 10
+
+    - name: Run Python script
+      run: python perfy-library/testmanager.py --cr 10 --wt 1 --url http://localhost:3000 --duration 10 --method POST --body True --timeout 5 --expected_error_rate 0 --expected_max_response_time_p90 0.5 --expected_max_response_time_p95 0.7 --expected_max_response_time_p99 0.9
