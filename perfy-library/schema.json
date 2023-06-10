@@ -1,0 +1,33 @@
+{
+  "accountType": {
+    "type": "string",
+    "rules":
+      {
+        "oneOf": ["DEPOSIT", "CREDIT"]
+      },
+      "percentages": [
+        0.6,
+        0.4
+      ]
+  },
+  "balance": {
+    "type": "float",
+    "rules": {
+      "betweenMinMax": {
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    "constraints": [
+      {
+        "field": "accountType",
+        "check": {
+          "equalTo": "DEPOSIT"
+        },
+        "rules": {
+          "oneOf": [10, 20, 50, 100]
+        }
+      }
+    ]
+  }
+}
