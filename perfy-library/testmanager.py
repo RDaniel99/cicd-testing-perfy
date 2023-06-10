@@ -191,7 +191,7 @@ def execute_test(task=None, tasks_results_collection=None, tasks_collection=None
 
     print("Test result: " + test_result)
     if IS_PIPELINE:
-        if test_result:
+        if test_result == 'PASSED':
             sys.exit(0)
         else:
             sys.exit(1)
