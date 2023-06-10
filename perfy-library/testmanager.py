@@ -1,3 +1,5 @@
+import sys
+
 import requests
 import time
 import threading
@@ -33,6 +35,7 @@ def execute_test(task=None, tasks_results_collection=None, tasks_collection=None
     EXPECTED_MAX_TIME_P90 = None
     EXPECTED_MAX_TIME_P95 = None
     EXPECTED_MAX_TIME_P99 = None
+    IS_PIPELINE = None
 
     if task is None:
         parser = argparse.ArgumentParser()
@@ -49,6 +52,7 @@ def execute_test(task=None, tasks_results_collection=None, tasks_collection=None
         parser.add_argument('--expected_max_response_time_p90', type=float, help='Maximum time for P90 percentile')
         parser.add_argument('--expected_max_response_time_p95', type=float, help='Maximum time for P95 percentile')
         parser.add_argument('--expected_max_response_time_p99', type=float, help='Maximum time for P99 percentile')
+        parser.add_argument('--is_pipeline', type=bool, help='Does test run in a CI CD pipeline')
         args = parser.parse_args()
 
         CONCURRENT_REQUESTS = int(args.cr or 1)
@@ -63,6 +67,7 @@ def execute_test(task=None, tasks_results_collection=None, tasks_collection=None
         EXPECTED_MAX_TIME_P90 = float(args.expected_max_response_time_p90 or TIMEOUT + 1)
         EXPECTED_MAX_TIME_P95 = float(args.expected_max_response_time_p95 or TIMEOUT + 1)
         EXPECTED_MAX_TIME_P99 = float(args.expected_max_response_time_p99 or TIMEOUT + 1)
+        IS_PIPELINE = bool(args.is_pipeline or False)
 
     else:
         CONCURRENT_REQUESTS = task['cr']
@@ -78,6 +83,7 @@ def execute_test(task=None, tasks_results_collection=None, tasks_collection=None
         EXPECTED_MAX_TIME_P90 = TIMEOUT + 1
         EXPECTED_MAX_TIME_P95 = TIMEOUT + 1
         EXPECTED_MAX_TIME_P99 = TIMEOUT + 1
+        IS_PIPELINE = False
 
     # Define empty lists to store response data
     response_times = []
@@ -184,6 +190,11 @@ def execute_test(task=None, tasks_results_collection=None, tasks_collection=None
         test_result = 'FAILED'
 
     print("Test result: " + test_result)
+    if IS_PIPELINE:
+        if test_result:
+            sys.exit(0)
+        else:
+            sys.exit(1)
 
     # Create line graph of response time evolution
     plt.clf()
