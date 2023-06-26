@@ -28,10 +28,10 @@ app.post('/', async (req, res) => {
     const currentId = id;
 
     if (accountType === 'CREDIT') {
-      const sleepTime = Math.floor(Math.random() * 50) + 2000;
+      const sleepTime = Math.floor(Math.random() * 50) + 50;
       await sleep(sleepTime);
     } else if (accountType === 'DEPOSIT') {
-      const sleepTime = Math.floor(Math.random() * 50) + 2000;
+      const sleepTime = Math.floor(Math.random() * 50) + 100;
       await sleep(sleepTime);
     }
 
